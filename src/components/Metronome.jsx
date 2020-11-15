@@ -2,27 +2,45 @@ import React, { useState } from "react";
 import "./Metronome.css";
 
 const Metronome = () => {
-  const [bpm, setBpm] = useState(100);
-  let playing = false;
+  const [metronomeState, setMetronomeState] = useState({
+    bpm: 100,
+    playing: false
+  });
 
-  const handleChange = (e) => {
+  const handleChangeBpm = (e) => {
     const bpm = e.target.value;
-    setBpm((prevBpm) => bpm);
+    setMetronomeState((prevState) => {
+      return {
+        ...prevState,
+        bpm
+      };
+    });
+  };
+
+  const handleChangePlaying = (e) => {
+    setMetronomeState((prevState) => {
+      return {
+        ...prevState,
+        playing: !prevState.playing
+      };
+    });
   };
 
   return (
     <div className="metronome">
       <div className="bpm-slider">
-        <div>{bpm} BPM</div>
+        <div>{metronomeState.bpm} BPM</div>
         <input
           type="range"
           min="60"
           max="240"
-          value={bpm}
-          onChange={(e) => handleChange(e)}
+          value={metronomeState.bpm}
+          onChange={(e) => handleChangeBpm(e)}
         />
       </div>
-      <button>{playing ? "Stop" : "Start"}</button>
+      <button onClick={(e) => handleChangePlaying(e)}>
+        {metronomeState.playing ? "Stop" : "Start"}
+      </button>
     </div>
   );
 };
