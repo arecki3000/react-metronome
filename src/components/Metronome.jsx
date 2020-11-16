@@ -1,11 +1,32 @@
 import React, { useState } from "react";
 import "./Metronome.css";
+import click1 from "../sounds/click1.wav";
+import click2 from "../sounds/click2.wav";
 
 const Metronome = () => {
   const [metronomeState, setMetronomeState] = useState({
     bpm: 100,
-    playing: false
+    playing: false,
+    count: 0
   });
+
+  const sound1 = new Audio(click1);
+  const sound2 = new Audio(click2);
+
+  const playClick = () => {
+    if (metronomeState.count % 2 === 0) {
+      sound1.play();
+    } else {
+      sound2.play();
+    }
+
+    setMetronomeState((prevState) => {
+      return {
+        ...prevState,
+        count: prevState.count + 1
+      };
+    }, console.log("add count"));
+  };
 
   const handleChangeBpm = (e) => {
     const bpm = e.target.value;
@@ -18,12 +39,26 @@ const Metronome = () => {
   };
 
   const handleChangePlaying = (e) => {
-    setMetronomeState((prevState) => {
-      return {
-        ...prevState,
-        playing: !prevState.playing
-      };
-    });
+    let interval;
+    if (metronomeState.playing) {
+      clearInterval(interval);
+      setMetronomeState((prevState) => {
+        return {
+          ...prevState,
+          playing: false
+        };
+      });
+    } else {
+      interval = setInterval(() => {
+        playClick();
+      }, (60 / metronomeState.bpm) * 1000);
+      setMetronomeState((prevState) => {
+        return {
+          ...prevState,
+          playing: true
+        };
+      });
+    }
   };
 
   return (
